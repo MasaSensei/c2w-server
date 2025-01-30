@@ -16,3 +16,19 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->group(['prefix' => 'v1'], function () use ($router) {
+        $router->group(['prefix' => 'suppliers'], function () use ($router) {
+            $router->get('/', 'SuppliersController@index');
+            $router->get('/{id}', 'SuppliersController@show');
+            $router->post('/', 'SuppliersController@store');
+            $router->put('/{id}', 'SuppliersController@update');
+            $router->delete('/{id}', 'SuppliersController@destroy');
+        });
+    });
+});
+
+$router->options('/{any:.*}', function () {
+    return response()->json([], 204);
+});
