@@ -83,6 +83,9 @@ class SuppliersController extends Controller
         $supplier = $this->findSupplier($id);
 
         if ($supplier) {
+            $supplier->update([
+                'is_active' => false
+            ]);
             $supplier->delete();
             return ResponseHelper::deleted();
         }
