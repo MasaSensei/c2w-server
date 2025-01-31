@@ -26,6 +26,30 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->put('/{id}', 'SuppliersController@update');
             $router->delete('/{id}', 'SuppliersController@destroy');
         });
+
+        $router->group(['prefix' => 'codes'], function () use ($router) {
+            $router->get('/', 'CodeController@index');
+            $router->get('/{id}', 'CodeController@show');
+            $router->post('/', 'CodeController@store');
+            $router->put('/{id}', 'CodeController@update');
+            $router->delete('/{id}', 'CodeController@destroy');
+        });
+
+        $router->group(['prefix' => 'colors'], function () use ($router) {
+            $router->get('/', 'ColorController@index');
+            $router->get('/{id}', 'ColorController@show');
+            $router->post('/', 'ColorController@store');
+            $router->put('/{id}', 'ColorController@update');
+            $router->delete('/{id}', 'ColorController@destroy');
+        });
+
+        $router->group(['prefix' => 'models'], function () use ($router) {
+            $router->get('/', 'ModelController@index');
+            $router->get('/{id}', 'ModelController@show');
+            $router->post('/', 'ModelController@store');
+            $router->put('/{id}', 'ModelController@update');
+            $router->delete('/{id}', 'ModelController@destroy');
+        });
     });
 });
 
