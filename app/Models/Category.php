@@ -22,4 +22,9 @@ class Category extends BaseModel
     {
         return $query->where('is_active', 1);
     }
+
+    public function bahanbaku()
+    {
+        return $this->belongsToMany(BahanBaku::class, 'item_category_bahan_baku', 'id_item_category', 'id_bahan_baku');
+    }
 }

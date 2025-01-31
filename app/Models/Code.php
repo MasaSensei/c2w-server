@@ -22,4 +22,9 @@ class Code extends BaseModel
     {
         return $query->where('is_active', 1);
     }
+
+    public function bahanbaku()
+    {
+        return $this->hasMany(BahanBaku::class, 'id_code', 'id');
+    }
 }
