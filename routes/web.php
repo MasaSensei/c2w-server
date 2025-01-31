@@ -50,6 +50,22 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->put('/{id}', 'ModelController@update');
             $router->delete('/{id}', 'ModelController@destroy');
         });
+
+        $router->group(['prefix' => 'sizes'], function () use ($router) {
+            $router->get('/', 'SizeController@index');
+            $router->get('/{id}', 'SizeController@show');
+            $router->post('/', 'SizeController@store');
+            $router->put('/{id}', 'SizeController@update');
+            $router->delete('/{id}', 'SizeController@destroy');
+        });
+
+        $router->group(['prefix' => 'categories'], function () use ($router) {
+            $router->get('/', 'CategoriesController@index');
+            $router->get('/{id}', 'CategoriesController@show');
+            $router->post('/', 'CategoriesController@store');
+            $router->put('/{id}', 'CategoriesController@update');
+            $router->delete('/{id}', 'CategoriesController@delete');
+        });
     });
 });
 
