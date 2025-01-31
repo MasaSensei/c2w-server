@@ -42,6 +42,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->put('/{id}', 'ColorController@update');
             $router->delete('/{id}', 'ColorController@destroy');
         });
+
+        $router->group(['prefix' => 'models'], function () use ($router) {
+            $router->get('/', 'ModelController@index');
+            $router->get('/{id}', 'ModelController@show');
+            $router->post('/', 'ModelController@store');
+            $router->put('/{id}', 'ModelController@update');
+            $router->delete('/{id}', 'ModelController@destroy');
+        });
     });
 });
 
