@@ -2,55 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BahanBaku;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\BahanBaku;
 use App\Helpers\ResponseHelper;
+
 
 class BahanBakuController extends Controller
 {
     private function validateBahanBaku($data)
     {
         return Validator::make($data, [
-            'id_code'   => 'required|exists:code,id',
-            'id_color'  => 'required|exists:color,id',
-            'total_roll' => 'nullable|integer|min:0',
-            'total_yard' => 'nullable|numeric|min:0',
-            'cost_per_yard' => 'nullable|numeric|min:0',
+            'id_color' => 'required|integer',
+            'id_code' => 'required|integer',
+            'item' => 'required|string',
             'remarks' => 'nullable|string',
+            'total_roll' => 'nullable|integer',
+            'total_yard' => 'nullable|numeric',
+            'cost_per_yard' => 'nullable|numeric',
             'is_active' => 'required|boolean',
-            'item_categories' => 'nullable|array', // Ubah dari item_category ke item_categories
-            'item_categories.*' => 'exists:item_categories,id', // Validasi kategori
         ]);
     }
 
-    private function findBahanBaku($id)
+    private function findCategory($id)
     {
-        return BahanBaku::with('category')->find($id);
+        return BahanBaku::find($id);
     }
 
     public function index()
     {
-        $datas = BahanBaku::active()->with(['category', 'code', 'color'])->get();
+        $datas = BahanBaku::with('color', 'code')->get();
 
-        $datas->each(function ($data) {
-            $data->makeHidden(['id_code', 'id_color']);
-            $data->category->each(function ($category) {
-                $category->makeHidden('pivot'); // Menyembunyikan pivot di setiap kategori
-            });
-        });
+        if (count($datas) > 0) {
+            return ResponseHelper::success($datas);
+        }
 
-        return count($datas) > 0 ? ResponseHelper::success($datas) : ResponseHelper::notFound();
+        return ResponseHelper::notFound();
     }
 
     public function show($id)
     {
-        $data = $this->findBahanBaku($id);
+        $data = BahanBaku::find($id);
+
         if ($data) {
-            // Menyembunyikan pivot pada kategori
-            $data->category->each(function ($category) {
-                $category->makeHidden('pivot');
-            });
             return ResponseHelper::success($data);
         }
 
@@ -60,55 +54,42 @@ class BahanBakuController extends Controller
     public function store(Request $request)
     {
         $validator = $this->validateBahanBaku($request->all());
+
         if ($validator->fails()) {
             return ResponseHelper::error($validator->errors());
         }
 
-        $data = BahanBaku::create($request->except('item_categories'));
+        $data = BahanBaku::create($request->all());
 
-        if ($request->has('item_categories')) {
-            $data->category()->sync($request->item_categories);
-        }
-
-        // Menyembunyikan pivot pada kategori
-        $data->category->each(function ($category) {
-            $category->makeHidden('pivot');
-        });
-
-        return ResponseHelper::created($data->load('category'));
+        return ResponseHelper::created($data);
     }
 
     public function update($id, Request $request)
     {
         $validator = $this->validateBahanBaku($request->all());
+
         if ($validator->fails()) {
             return ResponseHelper::error($validator->errors());
         }
 
-        $data = $this->findBahanBaku($id);
+        $data = $this->findCategory($id);
+
         if ($data) {
-            $data->update($request->except('item_categories'));
-
-            if ($request->has('item_categories')) {
-                $data->category()->sync($request->item_categories);
-            }
-
-            // Menyembunyikan pivot pada kategori
-            $data->category->each(function ($category) {
-                $category->makeHidden('pivot');
-            });
-
-            return ResponseHelper::edit($data->load('category'));
+            $data->update($request->all());
+            return ResponseHelper::edit($data);
         }
 
         return ResponseHelper::notFound();
     }
 
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        $data = $this->findBahanBaku($id);
+        $data = $this->findCategory($id);
+
         if ($data) {
-            $data->category()->detach(); // Hapus relasi kategori sebelum delete
+            $data->update([
+                'is_active' => false
+            ]);
             $data->delete();
             return ResponseHelper::deleted();
         }

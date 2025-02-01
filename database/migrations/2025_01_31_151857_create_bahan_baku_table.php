@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_code')->constrained('code')->onDelete('cascade');
             $table->foreignId('id_color')->constrained('color')->onDelete('cascade');
+            $table->text('item');
             $table->integer('total_roll')->default(0)->nullable();
             $table->decimal('total_yard', 8, 2)->nullable();
             $table->decimal('cost_per_yard', 8, 2)->nullable();

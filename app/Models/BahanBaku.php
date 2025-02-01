@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+
+
+
 class BahanBaku extends BaseModel
 {
     protected $table = 'bahan_baku';
-
 
     protected $fillable = [
         'id_code',
         'id_color',
         'total_roll',
+        'item',
         'total_yard',
         'cost_per_yard',
         'remarks',
@@ -36,15 +39,5 @@ class BahanBaku extends BaseModel
     public function color()
     {
         return $this->belongsTo(Color::class, 'id_color', 'id');
-    }
-
-    public function category()
-    {
-        return $this->belongsToMany(
-            Category::class,
-            'item_category_bahan_baku',
-            'id_bahan_baku',
-            'id_item_category'
-        )->withTimestamps();
     }
 }
