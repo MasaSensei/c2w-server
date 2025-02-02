@@ -74,6 +74,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->put('/{id}', 'BahanBakuController@update');
             $router->delete('/{id}', 'BahanBakuController@destroy');
         });
+
+        $router->group(['prefix' => 'incoming-bahan-baku'], function () use ($router) {
+            $router->get('/', 'IncomingBahanBakuController@index');
+            $router->get('/{id}', 'IncomingBahanBakuController@show');
+            $router->post('/', 'IncomingBahanBakuController@store');
+            $router->put('/{id}', 'IncomingBahanBakuController@update');
+            $router->delete('/{id}', 'IncomingBahanBakuController@destroy');
+        });
     });
 });
 
