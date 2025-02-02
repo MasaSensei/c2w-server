@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\IncomingBahanBaku;
 use App\Helpers\ResponseHelper;
-
+use App\Models\BahanBaku;
 
 class IncomingBahanBakuController extends Controller
 {
@@ -58,7 +58,7 @@ class IncomingBahanBakuController extends Controller
             IncomingDetailBahanBaku::create([
                 'id_incoming_bahan_baku' => $data->id,
                 'id_bahan_baku' => $detail['id_bahan_baku'],
-                'length_yard' => $detail['length_yard'],
+                'length_yard' => $detail['total_yard'] / $detail['roll'],
                 'roll' => $detail['roll'],
                 'total_yard' => $detail['total_yard'],
                 'cost_per_yard' => $detail['cost_per_yard'],
@@ -66,8 +66,37 @@ class IncomingBahanBakuController extends Controller
                 'remarks' => $detail['remarks'],
                 'is_active' => 1,
             ]);
+
+            $bahan_baku = BahanBaku::find($detail['id_bahan_baku']);
+
+            if ($bahan_baku) {
+                $new_total_roll = $bahan_baku->total_roll + $detail['roll'];
+                $new_total_yard = $bahan_baku->total_yard + $detail['total_yard'];
+
+                $new_cost_per_yard = (
+                    ($bahan_baku->total_yard * $bahan_baku->cost_per_yard) +
+                    ($detail['total_yard'] * $detail['cost_per_yard'])
+                ) / $new_total_yard;
+
+                $bahan_baku->update([
+                    'total_roll' => $new_total_roll,
+                    'total_yard' => $new_total_yard,
+                    'cost_per_yard' => $new_cost_per_yard,
+                ]);
+            }
         }
 
         return ResponseHelper::created($data->load('details.bahanBaku'), 'Incoming bahan baku berhasil ditambahkan');
+    }
+
+    public function show($id)
+    {
+        $data = IncomingBahanBaku::with(['suppliers', 'details.bahanBaku', 'details.bahanBaku.color', 'details.bahanBaku.code'])->find($id);
+
+        if ($data) {
+            return ResponseHelper::success($data);
+        }
+
+        return ResponseHelper::notFound();
     }
 }
