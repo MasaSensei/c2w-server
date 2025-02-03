@@ -24,4 +24,9 @@ class Worker extends BaseModel
         return $this->belongsToMany(WorkerType::class, 'worker_worker_type', 'id_worker', 'id_worker_type')
             ->withPivot('min_cost', 'is_active');
     }
+
+    public function workerPrices()
+    {
+        return $this->hasMany(WorkerPrice::class, 'id_worker');
+    }
 }
