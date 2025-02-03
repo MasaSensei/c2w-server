@@ -90,6 +90,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->put('/{id}', 'OutgoingBahanBakuController@update');
             $router->delete('/{id}', 'OutgoingBahanBakuController@destroy');
         });
+
+        $router->group(['prefix' => 'workers'], function () use ($router) {
+            $router->get('/', 'WorkerController@index');
+            $router->get('/{id}', 'WorkerController@show');
+            $router->post('/', 'WorkerController@store');
+            $router->put('/{id}', 'WorkerController@update');
+            $router->delete('/{id}', 'WorkerController@destroy');
+        });
     });
 });
 
