@@ -32,12 +32,27 @@ class IncomingBahanBakuController extends Controller
     {
         $datas = IncomingBahanBaku::with(['suppliers', 'details.bahanBaku', 'details.bahanBaku.color', 'details.bahanBaku.code'])->get();
 
-        if (count($datas) > 0) {
+        if ($datas->isNotEmpty()) {
+            $datas = $datas->map(function ($incoming) {
+                $incoming->details->map(function ($detail) {
+                    $bahanBaku = $detail->bahanBaku;
+                    if ($bahanBaku) {
+                        // Hilangkan desimal jika .00
+                        $bahanBaku->price_per_yard = floatval($bahanBaku->price_per_yard) == intval($bahanBaku->price_per_yard)
+                            ? intval($bahanBaku->price_per_yard)
+                            : number_format($bahanBaku->price_per_yard, 2);
+                    }
+                    return $detail;
+                });
+                return $incoming;
+            });
+
             return ResponseHelper::success($datas);
         }
 
         return ResponseHelper::notFound();
     }
+
 
     public function store(Request $request)
     {
@@ -94,6 +109,17 @@ class IncomingBahanBakuController extends Controller
         $data = IncomingBahanBaku::with(['suppliers', 'details.bahanBaku', 'details.bahanBaku.color', 'details.bahanBaku.code'])->find($id);
 
         if ($data) {
+            // Modifikasi price_per_yard sebelum return
+            $data->details->map(function ($detail) {
+                $bahanBaku = $detail->bahanBaku;
+                if ($bahanBaku) {
+                    $bahanBaku->price_per_yard = floatval($bahanBaku->price_per_yard) == intval($bahanBaku->price_per_yard)
+                        ? intval($bahanBaku->price_per_yard)
+                        : number_format($bahanBaku->price_per_yard, 2);
+                }
+                return $detail;
+            });
+
             return ResponseHelper::success($data);
         }
 
