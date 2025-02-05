@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('inventory_bahan_baku_to_cutters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_bahan_baku')->constrained('bahan_baku')->onDelete('cascade');
+            $table->foreignId('id_size')->constrained('size')->onDelete('cascade');
+            $table->foreignId('id_model')->constrained('model')->onDelete('cascade');
             $table->date('transfer_date');
             $table->text('item');
             $table->integer('total_roll')->default(0);

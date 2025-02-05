@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('order_bahan_baku', function (Blueprint $table) {
             $table->id();
             $table->string('invoice_number')->unique();
-            $table->date('oder_date');
+            $table->date('order_date');
             $table->date('due_date');
             $table->text('remarks')->nullable();
             $table->boolean('is_active')->default(1);

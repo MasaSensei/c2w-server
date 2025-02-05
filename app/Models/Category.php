@@ -27,4 +27,9 @@ class Category extends BaseModel
     {
         return $this->belongsToMany(BahanBaku::class, 'item_category_bahan_baku', 'id_item_category', 'id_bahan_baku');
     }
+
+    public function inventoryBahanBakuToCutters()
+    {
+        return $this->belongsToMany(InventoryBahanBakuToCutters::class, 'material_to_cutters_item_category', 'id_item_category', 'id_inv_cutters_material');
+    }
 }
