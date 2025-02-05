@@ -40,4 +40,9 @@ class BahanBaku extends BaseModel
     {
         return $this->belongsTo(Color::class, 'id_color', 'id');
     }
+
+    public function bahan_baku_to_cutters()
+    {
+        return $this->hasMany(InventoryBahanBakuToCutters::class, 'id_bahan_baku', 'id');
+    }
 }

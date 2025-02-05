@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('order_bahan_baku_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_order_bahan_baku')->constrained('order_bahan_baku')->onDelete('cascade');
-            $table->foreignId('id_inventory_bahan_baku_to_cutters')->constrained('inventory_bahan_baku_to_cutters')->onDelete('cascade');
+            $table->foreignId('id_inv_cutters_material')->constrained('inventory_bahan_baku_to_cutters')->onDelete('cascade');
             $table->integer('roll')->default(0);
             $table->decimal('total_yard', 10, 2);
             $table->decimal('cost_per_yard', 8, 2);
