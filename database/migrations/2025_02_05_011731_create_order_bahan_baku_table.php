@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('outgoing_bahan_baku', function (Blueprint $table) {
+        Schema::create('order_bahan_baku', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_bahan_baku')->constrained('bahan_baku')->onDelete('cascade');
-            $table->date('outgoing_date');
-            $table->integer('total_roll');
-            $table->decimal('total_yard', 8, 2);
-            $table->enum('status', ['cutting', 'return'])->default('cutting');
-            $table->string('incoming_invoice_number')->nullable();
+            $table->string('invoice_number')->unique();
+            $table->date('oder_date');
+            $table->date('due_date');
             $table->text('remarks')->nullable();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('outgoing_bahan_baku');
+        Schema::dropIfExists('order_bahan_baku');
     }
 };
