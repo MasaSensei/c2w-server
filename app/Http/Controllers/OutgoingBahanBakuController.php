@@ -31,7 +31,7 @@ class OutgoingBahanBakuController extends Controller
 
     public function index()
     {
-        $data = OutgoingBahanBaku::with(['bahanbaku', 'bahanbaku.color', 'bahanbaku.code'])->get();
+        $data = OutgoingBahanBaku::with(['bahanbaku', 'bahanbaku.color', 'bahanbaku.code', 'item_categories'])->get();
 
         if (count($data) > 0) {
             return ResponseHelper::success($data);

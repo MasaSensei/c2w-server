@@ -106,6 +106,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->put('/{id}', 'InventoryBahanBakuToCuttersController@update');
             $router->delete('/{id}', 'InventoryBahanBakuToCuttersController@destroy');
         });
+
+        $router->group(['prefix' => 'orders-to-cutters'], function () use ($router) {
+            $router->get('/', 'OrderBahanBakuController@index');
+            $router->get('/{id}', 'OrderBahanBakuController@show');
+            $router->post('/', 'OrderBahanBakuController@store');
+            $router->put('/{id}', 'OrderBahanBakuController@update');
+            $router->delete('/{id}', 'OrderBahanBakuController@destroy');
+        });
     });
 });
 

@@ -58,12 +58,11 @@ class InventoryBahanBakuToCuttersController extends Controller
             ->where('id_size', $request->id_size)
             ->where('id_model', $request->id_model)
             ->where('transfer_date', $request->transfer_date)
-            ->whereHas('category', function ($query) use ($request) {
-                $query->whereIn('inventory_bahan_baku_to_cutters_item_category.id_item_category', $request->category);
+            ->whereDoesntHave('category', function ($query) use ($request) {
+                $query->whereNotIn('inventory_bahan_baku_to_cutters_item_category.id_item_category', $request->categories);
             })
             ->first();
 
-        // Jika data sudah ada, update total_roll dan total_yard
         if ($existingData) {
             $existingData->total_roll += $request->total_roll;
             $existingData->total_yard += $request->total_yard;
@@ -88,8 +87,8 @@ class InventoryBahanBakuToCuttersController extends Controller
         ]);
 
         // Menyambungkan kategori (pivot) ke InventoryBahanBakuToCutters
-        if (isset($request->category) && count($request->category) > 0) {
-            $data->category()->attach($request->category);
+        if (isset($request->categories) && count($request->categories) > 0) {
+            $data->category()->attach($request->categories);
         }
 
         // Mengambil data bahan baku yang terkait

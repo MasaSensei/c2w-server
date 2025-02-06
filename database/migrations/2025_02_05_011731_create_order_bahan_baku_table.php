@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('invoice_number')->unique();
             $table->date('order_date');
             $table->date('due_date');
+            $table->enum('status', ['new', 'pending', 'done'])->default('new');
             $table->text('remarks')->nullable();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
