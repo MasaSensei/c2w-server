@@ -16,12 +16,14 @@ return new class extends Migration
             $table->foreignId('id_inv_cutters_material')
                 ->constrained('inventory_bahan_baku_to_cutters')
                 ->onDelete('cascade')
-                ->name('fk_inv_cutters_material'); // Menetapkan nama constraint manual
+                ->name('fk_inv_cutters_material');
             $table->foreignId('id_item_category')
                 ->constrained('item_categories')
                 ->onDelete('cascade')
-                ->name('fk_item_category'); // Menetapkan nama constraint manual
+                ->name('fk_item_category');
+            $table->boolean('is_active')->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

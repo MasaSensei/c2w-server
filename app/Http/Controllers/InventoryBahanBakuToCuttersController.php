@@ -23,8 +23,8 @@ class InventoryBahanBakuToCuttersController extends Controller
             'status' => 'required|string',
             'remarks' => 'nullable|string',
             'is_active' => 'required|boolean',
-            'category' => 'required|array',
-            'category.*' => 'exists:item_categories,id',
+            'categories' => 'required|array',
+            'categories.*' => 'exists:item_categories,id',
         ]);
     }
     private function findInventoryBahanBakuToCutters($id)
@@ -34,7 +34,7 @@ class InventoryBahanBakuToCuttersController extends Controller
 
     public function index()
     {
-        $data = InventoryBahanBakuToCutters::with('category')->get();
+        $data = InventoryBahanBakuToCutters::with('category', 'size', 'model')->get();
 
         if ($data) {
             return ResponseHelper::success($data);
@@ -59,7 +59,7 @@ class InventoryBahanBakuToCuttersController extends Controller
             ->where('id_model', $request->id_model)
             ->where('transfer_date', $request->transfer_date)
             ->whereHas('category', function ($query) use ($request) {
-                $query->whereIn('item_categories.id', $request->category);
+                $query->whereIn('inventory_bahan_baku_to_cutters_item_category.id_item_category', $request->category);
             })
             ->first();
 

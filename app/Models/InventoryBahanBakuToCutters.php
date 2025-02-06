@@ -51,6 +51,6 @@ class InventoryBahanBakuToCutters extends BaseModel
 
     public function category()
     {
-        return $this->belongsToMany(Category::class, 'material_to_cutters_item_category', 'id_inv_cutters_material', 'id_item_category');
+        return $this->belongsToMany(Category::class, 'inventory_bahan_baku_to_cutters_item_category', 'id_inv_cutters_material', 'id_item_category');
     }
 }
