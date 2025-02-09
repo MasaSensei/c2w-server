@@ -114,6 +114,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->put('/{id}', 'OrderBahanBakuController@update');
             $router->delete('/{id}', 'OrderBahanBakuController@destroy');
         });
+
+        $router->group(['prefix' => 'batches'], function () use ($router) {
+            $router->get('/', 'BatchController@index');
+            $router->get('/{id}', 'BatchController@show');
+            $router->post('/', 'BatchController@store');
+            $router->put('/{id}', 'BatchController@update');
+            $router->delete('/{id}', 'BatchController@destroy');
+        });
     });
 });
 
