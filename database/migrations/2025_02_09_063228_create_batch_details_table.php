@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('batch_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_batch')->constrained('batches')->onDelete('cascade');
+            $table->unsignedBigInteger('id_reference');
             $table->text('product_code');
             $table->enum('reference_type', ['cutters', 'sewer', 'client'])->default('cutters');
             $table->integer('quantity');
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['reference_type']);
+            $table->index(['id_reference', 'reference_type']);
         });
     }
 

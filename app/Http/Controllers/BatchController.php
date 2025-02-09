@@ -19,7 +19,8 @@ class BatchController extends Controller
             'status' => 'required|string',
             'remarks' => 'nullable|string',
             'is_active' => 'boolean',
-            'details' => 'required|array|min:1', // Minimal harus ada 1 detail
+            'details' => 'required|array|min:1',
+            'details.*.id_reference' => 'required',
             'details.*.product_code' => 'required|string',
             'details.*.reference_type' => 'required|in:cutters,sewer,client',
             'details.*.quantity' => 'required|integer|min:1',

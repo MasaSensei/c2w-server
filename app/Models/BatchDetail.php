@@ -10,6 +10,7 @@ class BatchDetail extends BaseModel
 
     protected $fillable = [
         'id_batch',
+        'id_reference',
         'product_code',
         'reference_type',
         'quantity',
