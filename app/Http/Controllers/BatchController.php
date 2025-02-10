@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Batch;
 use App\Helpers\ResponseHelper;
+use App\Models\OrderBahanBakuDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -37,19 +38,52 @@ class BatchController extends Controller
         return Batch::find($id)->with('details');
     }
 
+    private function getReferenceDetail($detail)
+    {
+        switch ($detail->reference_type) {
+            case 'cutters':
+                return OrderBahanBakuDetails::with('orderBahanBaku')->where('id', $detail->id_reference)->first();
+            default:
+                return null;
+        }
+    }
+
     public function index(Request $request)
     {
-        $query = Batch::with(['details' => function ($query) use ($request) {
+        $batches = Batch::with(['details' => function ($query) use ($request) {
             if ($request->has('reference_type')) {
                 $query->where('reference_type', $request->reference_type);
             }
-        }]);
+        }])->get();
 
-        $batches = $query->get();
+        // Tambahkan informasi dari tabel referensi
+        $batches->transform(function ($batch) {
+            $batch->details->transform(function ($detail) {
+                $detail->reference = $this->getReferenceDetail($detail);
+                return $detail;
+            });
+            return $batch;
+        });
 
         return ResponseHelper::success($batches);
     }
 
+    public function show(Request $request, $id)
+    {
+        $batch = Batch::with('details')->find($id);
+
+        if (!$batch) {
+            return ResponseHelper::notFound();
+        }
+
+        // Tambahkan informasi dari tabel referensi
+        $batch->details->transform(function ($detail) {
+            $detail->reference = $this->getReferenceDetail($detail);
+            return $detail;
+        });
+
+        return ResponseHelper::success($batch);
+    }
 
     public function store(Request $request)
     {
@@ -71,21 +105,12 @@ class BatchController extends Controller
             'is_active' => $request->is_active,
         ]);
 
+        // Menambahkan id_batch ke setiap detail sebelum disimpan
         foreach ($request->details as $detail) {
+            $detail['id_batch'] = $batch->id;
             $batch->details()->create($detail);
         }
 
         return ResponseHelper::success($batch);
-    }
-
-    public function show(Request $request, $id)
-    {
-        $data = $this->findBatch($id)->findOrFail($id);
-
-        if ($data) {
-            return ResponseHelper::success($data);
-        }
-
-        return ResponseHelper::notFound();
     }
 }
